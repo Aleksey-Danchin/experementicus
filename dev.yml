@@ -1,0 +1,36 @@
+services:
+    front:
+        container_name: front
+        build:
+            context: ./back/front
+            dockerfile: Dockerfile.dev
+        user: root
+        restart: always
+        depends_on:
+            - back
+        volumes:
+            - $PWD/back:/app
+        ports:
+            - 3000:3000
+
+    back:
+        container_name: back
+        build:
+            context: ./back
+            dockerfile: Dockerfile.dev
+        restart: always
+        depends_on:
+            - main_db
+        volumes:
+            - $PWD/back/:/app/
+        ports:
+            - 8080:80
+
+    main_db:
+        container_name: main_db
+        image: postgres
+        volumes:
+            - $PWD/dbs/main:/var/lib/postgresql/data
+        environment:
+            - POSTGRES_PASSWORD=123
+            - POSTGRES_DB=game

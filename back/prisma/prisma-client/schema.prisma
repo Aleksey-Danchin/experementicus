@@ -1,0 +1,50 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "./prisma-client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id String @id @default(cuid())
+
+  login    String
+  password String
+
+  wood Int @default(0)
+  food Int @default(0)
+
+  workers Worker[]
+}
+
+model Location {
+  id String @id @default(cuid())
+
+  wood Int
+  food Int
+
+  workers Worker[]
+}
+
+model Worker {
+  id String @id @default(cuid())
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+
+  location   Location? @relation(fields: [locationId], references: [id])
+  locationId String?
+
+  locationPlace LocationPlaceType?
+}
+
+enum LocationPlaceType {
+  wood
+  food
+}
